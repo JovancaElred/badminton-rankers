@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Light theme palette -->
+    <color name="md_theme_light_primary">#f3f89e</color>
     <color name="md_theme_light_onPrimary">#000000</color>
     <color name="md_theme_light_background">#FFFFFF</color>
     <color name="md_theme_light_onBackground">#000000</color>
