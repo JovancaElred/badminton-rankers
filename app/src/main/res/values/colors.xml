@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Light theme palette -->
+    <color name="md_theme_light_onPrimary">#000000</color>
+    <color name="md_theme_light_background">#FFFFFF</color>
+    <color name="md_theme_light_onBackground">#000000</color>
+    <color name="md_theme_light_surface">#FFFFFF</color>
+    <color name="md_theme_light_onSurface">#1A1A1A</color>
+    <color name="md_theme_light_secondary">#D6D6D6</color>
+    <color name="md_theme_light_onSecondary">#000000</color>
+    <color name="md_theme_light_error">#B00020</color>
+    <color name="md_theme_light_onError">#FFFFFF</color>
+
+    <!-- Base color -->
+    <color name="md_theme_dark_primary">#f3f89e</color>
+
+    <!-- Dark theme palette -->
+    <color name="md_theme_dark_onPrimary">#1A1A1A</color>
+    <color name="md_theme_dark_background">#121212</color>
+    <color name="md_theme_dark_onBackground">#FFFFFF</color>
+    <color name="md_theme_dark_surface">#1E1E1E</color>
+    <color name="md_theme_dark_onSurface">#FFFFFF</color>
+    <color name="md_theme_dark_secondary">#3A3A3A</color>
+    <color name="md_theme_dark_onSecondary">#FFFFFF</color>
+    <color name="md_theme_dark_error">#CF6679</color>
+    <color name="md_theme_dark_onError">#000000</color>
+
+
+    <color name="grey">#B2BEB5</color>
+</resources>
