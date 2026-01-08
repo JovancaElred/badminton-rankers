@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.badmintonrankers"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.badmintonrankers"
@@ -26,6 +26,10 @@ android {
             )
         }
     }
+
+    buildFeatures{
+        viewBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -45,4 +49,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.fragment.ktx)
+    implementation  (libs.androidx.room.runtime)
+    implementation (libs.androidx.room.ktx)
+    implementation(libs.circleimageview)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
 }
