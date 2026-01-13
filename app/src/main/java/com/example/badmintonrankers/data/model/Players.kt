@@ -1,14 +1,19 @@
 package com.example.badmintonrankers.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "ranker_players")
 data class Players(
-    val uuid: String? = null,
-    val displayName: String? = null,
-    val mmr: Int? = null,
-    val rank: String? = null,
-    val wr: Int? = null,
-    val matches: Int? = null,
-    val win: Int? = null,
-    val lose: Int? = null,
-    val peakMmr: Int? = null,
-    val lowestMmr: Int? = null,
+    @PrimaryKey(autoGenerate = true)
+    var uuid: Int,
+    val displayName: String?,
+    val mmr: Int?,
+    val rank: String?,
+    val wr: Int?,
+    val matches: Int?,
+    val win: Int?,
+    val lose: Int?,
+    val peakMmr: Int?,
+    val lowestMmr: Int?
 )
