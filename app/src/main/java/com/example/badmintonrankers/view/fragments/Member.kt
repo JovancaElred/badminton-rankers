@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.example.badmintonrankers.R
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,6 +40,24 @@ class Member : Fragment() {
         return inflater.inflate(R.layout.fragment_member, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val fab: View = view.findViewById(R.id.fab)
+
+        fab.setOnClickListener{
+            val dialog = BottomSheetDialog(requireContext())
+            val addMemberView = layoutInflater.inflate(R.layout.new_member_sheet, null)
+
+            val saveButton = addMemberView.findViewById<Button>(R.id.saveButton)
+
+            saveButton.setOnClickListener{
+                dialog.dismiss()
+            }
+            dialog.setCancelable(true)
+            dialog.setContentView(addMemberView)
+            dialog.show()
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
