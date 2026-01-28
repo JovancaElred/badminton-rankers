@@ -6,8 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.badmintonrankers.R
+import com.example.badmintonrankers.data.model.Players
+import com.example.badmintonrankers.databinding.FragmentMemberBinding
+import com.example.badmintonrankers.databinding.NewMemberSheetBinding
+import com.example.badmintonrankers.view.viewmodel.MemberViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +35,14 @@ class Member : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private val viewModel: MemberViewModel by activityViewModels()
+
+    private var _binding: FragmentMemberBinding? = null
+    private val binding get() = _binding!!
+
+    private var _addMemberBinding: NewMemberSheetBinding? = null
+    private val addMemberBinding get() = _addMemberBinding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -37,7 +56,8 @@ class Member : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_member, container, false)
+        _binding = FragmentMemberBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,16 +66,42 @@ class Member : Fragment() {
 
         fab.setOnClickListener{
             val dialog = BottomSheetDialog(requireContext())
-            val addMemberView = layoutInflater.inflate(R.layout.new_member_sheet, null)
+            _addMemberBinding = NewMemberSheetBinding.inflate(layoutInflater)
 
-            val saveButton = addMemberView.findViewById<Button>(R.id.saveButton)
 
-            saveButton.setOnClickListener{
-                dialog.dismiss()
+            addMemberBinding.saveButton.setOnClickListener{
+                val input = addMemberBinding.nameEditText.text
+                val player = Players(
+                    displayName = input.toString(),
+                    mmr = 1500,
+                    rank = "Bronze",
+                    wr = 100,
+                    matches = 0,
+                    win = 0,
+                    lose = 0,
+                    peakMmr = 1500,
+                    lowestMmr = 1500,
+                )
+
+                viewModel.addPlayer(player)
             }
             dialog.setCancelable(true)
-            dialog.setContentView(addMemberView)
+            dialog.setContentView(addMemberBinding.root)
             dialog.show()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                launch {
+                    viewModel.addPlayerSuccess.collect{
+                            success ->
+                        if(success == true){
+                            Toast.makeText(requireContext(), "Member Added!", Toast.LENGTH_SHORT).show()
+                            addMemberBinding.nameEditText.text.clear()
+                        }
+                    }
+                }
+            }
         }
     }
     companion object {
