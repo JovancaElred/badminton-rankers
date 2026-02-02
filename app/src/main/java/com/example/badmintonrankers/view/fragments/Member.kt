@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -64,6 +65,86 @@ class Member : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val fab: View = view.findViewById(R.id.fab)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                launch {
+                    viewModel.isLoading.collect{
+                            loading ->
+                        if(loading){
+                            binding.loadingBar.visibility = View.VISIBLE
+                            binding.loadingText.visibility = View.VISIBLE
+                        } else{
+                            binding.loadingBar.visibility = View.GONE
+                            binding.loadingText.visibility = View.GONE
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.data.collect{
+                            list ->
+                        if(list.isNotEmpty()){
+                            adapter.submitList(list)
+                            binding.agentRecycler.visibility = View.VISIBLE
+                            binding.cardSearch.visibility = View.VISIBLE
+                            binding.loadingBar.visibility = View.GONE
+                            binding.noDataText.visibility = View.GONE
+                            binding.noDataLottie.visibility = View.GONE
+                            binding.loadingText.visibility = View.GONE
+
+//                            binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+//                                override fun onQueryTextSubmit(query: String?): Boolean {
+//                                    return false
+//                                }
+//
+//                                override fun onQueryTextChange(newText: String?): Boolean {
+//                                    if (newText != null) {
+//                                        filterList(newText)
+//                                    }
+//                                    return true
+//                                }
+//
+//                            })
+                        } else {
+                            binding.agentRecycler.visibility = View.GONE
+                            binding.cardSearch.visibility = View.GONE
+                            binding.noDataText.visibility = View.VISIBLE
+                            binding.noDataLottie.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.error.collect{
+                            message ->
+                        binding.noDataText.visibility =
+                            if(message != null){
+                                View.VISIBLE
+                            } else{
+                                View.GONE
+                            }
+
+                        binding.noDataLottie.visibility =
+                            if(message != null){
+                                View.VISIBLE
+                            } else{
+                                View.GONE
+                            }
+                    }
+                }
+
+                launch {
+                    viewModel.addPlayerSuccess.collect{
+                            success ->
+                        if(success == true){
+                            Toast.makeText(requireContext(), "Member Added!", Toast.LENGTH_SHORT).show()
+                            addMemberBinding.nameEditText.text.clear()
+                        }
+                    }
+                }
+            }
+        }
+
         fab.setOnClickListener{
             val dialog = BottomSheetDialog(requireContext())
             _addMemberBinding = NewMemberSheetBinding.inflate(layoutInflater)
@@ -81,6 +162,8 @@ class Member : Fragment() {
                     lose = 0,
                     peakMmr = 1500,
                     lowestMmr = 1500,
+                    rankImage = "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/3/smallicon.png",
+                    rankImageLarge = "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/3/largeicon.png"
                 )
 
                 viewModel.addPlayer(player)
@@ -90,19 +173,6 @@ class Member : Fragment() {
             dialog.show()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                launch {
-                    viewModel.addPlayerSuccess.collect{
-                            success ->
-                        if(success == true){
-                            Toast.makeText(requireContext(), "Member Added!", Toast.LENGTH_SHORT).show()
-                            addMemberBinding.nameEditText.text.clear()
-                        }
-                    }
-                }
-            }
-        }
     }
     companion object {
         /**

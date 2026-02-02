@@ -11,4 +11,6 @@
     <string name="memberNameHint">Input Member Name</string>
     <string name="addButton">Add</string>
     <string name="addNewMemberTitle">Add New Member</string>
+    <string name="fetching_data">Fetching Data</string>
+    <string name="no_data">No Data</string>
 </resources>

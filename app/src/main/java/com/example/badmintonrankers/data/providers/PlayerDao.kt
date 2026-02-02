@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.badmintonrankers.data.model.Players
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlayerDao {
     @Query("SELECT * FROM ranker_players")
-    fun getPlayerData(): LiveData<List<Players>>
+    fun getPlayerData(): Flow<List<Players>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addPlayer(players: Players)

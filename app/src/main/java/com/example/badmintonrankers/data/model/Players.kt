@@ -10,6 +10,8 @@ data class Players(
     val displayName: String?,
     val mmr: Int?,
     val rank: String?,
+    val rankImage: String?,
+    val rankImageLarge: String?,
     val wr: Int?,
     val matches: Int?,
     val win: Int?,

@@ -57,4 +57,6 @@ dependencies {
     implementation(libs.circleimageview)
     implementation(libs.androidx.swiperefreshlayout)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.lottie)
+    implementation (libs.glide)
 }
