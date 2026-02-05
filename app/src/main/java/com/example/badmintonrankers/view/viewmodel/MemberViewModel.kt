@@ -2,8 +2,6 @@ package com.example.badmintonrankers.view.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.badmintonrankers.data.model.Players
 import com.example.badmintonrankers.data.providers.PlayerDB
@@ -11,6 +9,8 @@ import com.example.badmintonrankers.data.repository.BadminRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class MemberViewModel (
@@ -32,6 +32,8 @@ class MemberViewModel (
     init {
         val playerDao = PlayerDB.getDatabase(application).playerDao()
         repository = BadminRepository(playerDao)
+
+        getMemberData()
     }
 
     private val _addPlayerSuccess = MutableStateFlow<Boolean?>(false)
@@ -51,17 +53,15 @@ class MemberViewModel (
     fun getMemberData(){
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.emit(true)
-            try {
-                repository.getPlayer().collect{ players ->
+            repository.getPlayer()
+                .onStart { _isLoading.value = true }
+                .catch { e -> _error.value = e.message }
+                .collect { players ->
                     _data.value = players
+                    _isLoading.value = false
                 }
-            } catch (e: Exception){
-                _error.emit(e.message)
-            } finally {
-                _isLoading.emit(false)
-            }
         }
-
-
     }
+
+
 }

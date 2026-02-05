@@ -55,7 +55,7 @@ class PlayerAdapter(
 
 object PlayersCallBack : DiffUtil.ItemCallback<Players>(){
     override fun areItemsTheSame(oldItem: Players, newItem: Players): Boolean {
-        return oldItem.uuid == newItem.uuid
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Players, newItem: Players): Boolean {

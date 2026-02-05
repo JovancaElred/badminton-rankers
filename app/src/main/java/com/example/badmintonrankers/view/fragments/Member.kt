@@ -5,18 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.badmintonrankers.R
 import com.example.badmintonrankers.data.model.Players
 import com.example.badmintonrankers.databinding.FragmentMemberBinding
 import com.example.badmintonrankers.databinding.NewMemberSheetBinding
+import com.example.badmintonrankers.view.adapter.PlayerAdapter
 import com.example.badmintonrankers.view.viewmodel.MemberViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
@@ -44,6 +43,8 @@ class Member : Fragment() {
     private var _addMemberBinding: NewMemberSheetBinding? = null
     private val addMemberBinding get() = _addMemberBinding!!
 
+    private lateinit var adapter: PlayerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -65,6 +66,11 @@ class Member : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val fab: View = view.findViewById(R.id.fab)
 
+        adapter = PlayerAdapter{ player -> onClickPlayer(player)}
+        binding.memberRecycler.adapter = adapter
+        binding.memberRecycler.layoutManager = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.VERTICAL, false)
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
                 launch {
@@ -81,55 +87,31 @@ class Member : Fragment() {
                 }
 
                 launch {
-                    viewModel.data.collect{
-                            list ->
-                        if(list.isNotEmpty()){
+                    viewModel.data.collect { list ->
+                        if (list.isNotEmpty()) {
                             adapter.submitList(list)
-                            binding.agentRecycler.visibility = View.VISIBLE
+                            binding.memberRecycler.visibility = View.VISIBLE
                             binding.cardSearch.visibility = View.VISIBLE
-                            binding.loadingBar.visibility = View.GONE
                             binding.noDataText.visibility = View.GONE
                             binding.noDataLottie.visibility = View.GONE
-                            binding.loadingText.visibility = View.GONE
-
-//                            binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-//                                override fun onQueryTextSubmit(query: String?): Boolean {
-//                                    return false
-//                                }
-//
-//                                override fun onQueryTextChange(newText: String?): Boolean {
-//                                    if (newText != null) {
-//                                        filterList(newText)
-//                                    }
-//                                    return true
-//                                }
-//
-//                            })
-                        } else {
-                            binding.agentRecycler.visibility = View.GONE
+                        } else if (!viewModel.isLoading.value) {
+                            binding.memberRecycler.visibility = View.GONE
                             binding.cardSearch.visibility = View.GONE
                             binding.noDataText.visibility = View.VISIBLE
                             binding.noDataLottie.visibility = View.VISIBLE
                         }
                     }
+
                 }
 
                 launch {
-                    viewModel.error.collect{
-                            message ->
-                        binding.noDataText.visibility =
-                            if(message != null){
-                                View.VISIBLE
-                            } else{
-                                View.GONE
-                            }
-
-                        binding.noDataLottie.visibility =
-                            if(message != null){
-                                View.VISIBLE
-                            } else{
-                                View.GONE
-                            }
+                    viewModel.error.collect { message ->
+                        if (message != null) {
+                            binding.noDataText.visibility = View.VISIBLE
+                            binding.noDataLottie.visibility = View.VISIBLE
+                            binding.memberRecycler.visibility = View.GONE
+                            binding.cardSearch.visibility = View.GONE
+                        }
                     }
                 }
 
@@ -148,6 +130,10 @@ class Member : Fragment() {
         fab.setOnClickListener{
             val dialog = BottomSheetDialog(requireContext())
             _addMemberBinding = NewMemberSheetBinding.inflate(layoutInflater)
+
+            dialog.setOnDismissListener {
+                _addMemberBinding = null
+            }
 
 
             addMemberBinding.saveButton.setOnClickListener{
@@ -174,6 +160,11 @@ class Member : Fragment() {
         }
 
     }
+
+    fun onClickPlayer(player: Players){
+        print("a")
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
