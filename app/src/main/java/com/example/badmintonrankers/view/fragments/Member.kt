@@ -45,6 +45,8 @@ class Member : Fragment() {
 
     private lateinit var adapter: PlayerAdapter
 
+    private var dialog: BottomSheetDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -118,45 +120,44 @@ class Member : Fragment() {
                 launch {
                     viewModel.addPlayerSuccess.collect{
                             success ->
-                        if(success == true){
-                            Toast.makeText(requireContext(), "Member Added!", Toast.LENGTH_SHORT).show()
-                            addMemberBinding.nameEditText.text.clear()
-                        }
+                        Toast.makeText(requireContext(), "Member Added!", Toast.LENGTH_SHORT).show()
+                        dialog?.dismiss()
+                        _addMemberBinding?.nameEditText?.text?.clear()
                     }
                 }
             }
         }
 
         fab.setOnClickListener{
-            val dialog = BottomSheetDialog(requireContext())
+            dialog = BottomSheetDialog(requireContext())
             _addMemberBinding = NewMemberSheetBinding.inflate(layoutInflater)
 
-            dialog.setOnDismissListener {
+            dialog?.setOnDismissListener {
+                dialog = null
                 _addMemberBinding = null
             }
-
 
             addMemberBinding.saveButton.setOnClickListener{
                 val input = addMemberBinding.nameEditText.text
                 val player = Players(
                     displayName = input.toString(),
                     mmr = 1500,
-                    rank = "Bronze",
+                    rank = "Silver",
                     wr = 100,
                     matches = 0,
                     win = 0,
                     lose = 0,
                     peakMmr = 1500,
                     lowestMmr = 1500,
-                    rankImage = "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/3/smallicon.png",
-                    rankImageLarge = "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/3/largeicon.png"
+                    rankImage = "silver",
+                    rankImageLarge = "silver"
                 )
 
                 viewModel.addPlayer(player)
             }
-            dialog.setCancelable(true)
-            dialog.setContentView(addMemberBinding.root)
-            dialog.show()
+            dialog?.setCancelable(true)
+            dialog?.setContentView(addMemberBinding.root)
+            dialog?.show()
         }
 
     }

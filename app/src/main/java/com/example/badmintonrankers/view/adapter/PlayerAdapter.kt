@@ -34,7 +34,12 @@ class PlayerAdapter(
         fun bind(players: Players){
             currItem = players
             memberName.text = players.displayName
-            Glide.with(itemView.context).load(players.rankImageLarge).error(R.drawable.account).centerCrop().into(memberRank)
+            val imageId = itemView.context.resources.getIdentifier(
+                players.rankImageLarge,
+                "drawable",
+                itemView.context.packageName
+            )
+            Glide.with(itemView.context).load(imageId).error(R.drawable.account).centerCrop().into(memberRank)
 
         }
 

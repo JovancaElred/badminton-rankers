@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.navBar.setOnItemSelectedListener {
             when(it.itemId){
+                R.id.rankings -> replaceFragment(Leaderboard())
                 R.id.history -> replaceFragment(History())
                 R.id.member -> replaceFragment(Member())
                  else->{}

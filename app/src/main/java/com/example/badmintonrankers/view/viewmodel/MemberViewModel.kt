@@ -7,8 +7,11 @@ import com.example.badmintonrankers.data.model.Players
 import com.example.badmintonrankers.data.providers.PlayerDB
 import com.example.badmintonrankers.data.repository.BadminRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -36,16 +39,16 @@ class MemberViewModel (
         getMemberData()
     }
 
-    private val _addPlayerSuccess = MutableStateFlow<Boolean?>(false)
-    val addPlayerSuccess: StateFlow<Boolean?> = _addPlayerSuccess
+    private val _addPlayerSuccess = MutableSharedFlow<Unit?>()
+    val addPlayerSuccess: SharedFlow<Unit?> = _addPlayerSuccess.asSharedFlow()
 
     fun addPlayer(players: Players) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.addPlayer(players)
-                _addPlayerSuccess.emit(true)
+                _addPlayerSuccess.emit(Unit)
             } catch (e: Exception) {
-                _addPlayerSuccess.emit(false)
+                _error.emit(e.message)
             }
         }
     }
