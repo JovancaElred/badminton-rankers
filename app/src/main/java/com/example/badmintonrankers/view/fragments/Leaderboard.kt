@@ -5,9 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.badmintonrankers.R
 import com.example.badmintonrankers.databinding.FragmentLeaderboardBinding
 import com.example.badmintonrankers.databinding.FragmentMemberBinding
+import com.example.badmintonrankers.view.adapter.LeaderboardAdapter
+import com.example.badmintonrankers.view.viewmodel.LeaderboardViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,27 +29,70 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class Leaderboard : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val viewModel : LeaderboardViewModel by activityViewModels()
 
     private var _binding: FragmentLeaderboardBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var adapter: LeaderboardAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_leaderboard, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        adapter = LeaderboardAdapter()
+        binding.leaderboardRecycler.adapter = adapter
+        binding.leaderboardRecycler.layoutManager = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.VERTICAL, false)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                launch {
+                    viewModel.isLoading.collect{
+                        loading ->
+                        if (loading){
+                            binding.leaderboardLoading.visibility = View.VISIBLE
+                        } else{
+                            binding.leaderboardLoading.visibility = View.GONE
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.data.collect{
+                        list ->
+                        if(list.isNotEmpty()){
+                            adapter.submitList(list)
+                            binding.leaderboardRecycler.visibility = View.VISIBLE
+                            binding.noDataLottie.visibility = View.GONE
+                            binding.noDataText.visibility = View.GONE
+                        } else if(!viewModel.isLoading.value){
+                            binding.leaderboardRecycler.visibility = View.GONE
+                            binding.noDataLottie.visibility = View.VISIBLE
+                            binding.noDataText.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.error.collect{
+                        message ->
+                        if(message != null){
+                            binding.noDataLottie.visibility = View.VISIBLE
+                            binding.noDataText.visibility = View.VISIBLE
+                            binding.leaderboardRecycler.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     companion object {

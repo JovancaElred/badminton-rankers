@@ -53,7 +53,7 @@ class MemberViewModel (
         }
     }
 
-    fun getMemberData(){
+    private fun getMemberData(){
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.emit(true)
             repository.getPlayer()

@@ -48,12 +48,12 @@ class PlayerAdapter(
         submitList(list)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerAdapter.PlayerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_members,parent,false)
         return PlayerViewHolder(view, onClick)
     }
 
-    override fun onBindViewHolder(holder: PlayerAdapter.PlayerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 }
