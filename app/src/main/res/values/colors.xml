@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>d
-    <color name="green">#FF5BB450</color>d
+    <color name="white">#FFFFFFFF</color>
+    <color name="green">#FF5BB450</color>
+    <color name="gold">#FFD700</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="bronze">#CD7F32</color>
 
     <!-- Light theme palette -->
     <color name="md_theme_light_primary">#f3f89e</color>

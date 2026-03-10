@@ -36,12 +36,12 @@ class LeaderboardViewModel(
 
     private fun getMemberData(){
         viewModelScope.launch(Dispatchers.IO) {
-            _isLoading.emit(true)
             repository.getPlayer()
                 .onStart { _isLoading.value = true }
                 .catch { e -> _error.value = e.message }
                 .collect { players ->
-                    _data.value = players
+                    val sortedData = players.sortedByDescending { it.mmr }
+                    _data.emit(sortedData.toList())
                     _isLoading.value = false
                 }
         }

@@ -55,12 +55,11 @@ class MemberViewModel (
 
     private fun getMemberData(){
         viewModelScope.launch(Dispatchers.IO) {
-            _isLoading.emit(true)
             repository.getPlayer()
                 .onStart { _isLoading.value = true }
                 .catch { e -> _error.value = e.message }
                 .collect { players ->
-                    _data.value = players
+                    _data.emit(players)
                     _isLoading.value = false
                 }
         }

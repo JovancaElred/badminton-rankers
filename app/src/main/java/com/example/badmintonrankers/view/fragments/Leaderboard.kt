@@ -10,12 +10,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.badmintonrankers.R
 import com.example.badmintonrankers.databinding.FragmentLeaderboardBinding
-import com.example.badmintonrankers.databinding.FragmentMemberBinding
 import com.example.badmintonrankers.view.adapter.LeaderboardAdapter
 import com.example.badmintonrankers.view.viewmodel.LeaderboardViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -40,7 +37,8 @@ class Leaderboard : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_leaderboard, container, false)
+        _binding = FragmentLeaderboardBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,6 +91,11 @@ class Leaderboard : Fragment() {
             }
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

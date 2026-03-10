@@ -128,16 +128,16 @@ class Member : Fragment() {
                 val input = addMemberBinding.nameEditText.text
                 val player = Players(
                     displayName = input.toString(),
-                    mmr = 1500,
-                    rank = "Silver",
+                    mmr = 2500,
+                    rank = "Immortal",
                     wr = 100,
                     matches = 0,
                     win = 0,
                     lose = 0,
-                    peakMmr = 1500,
+                    peakMmr = 2500,
                     lowestMmr = 1500,
-                    rankImage = "silver",
-                    rankImageLarge = "silver"
+                    rankImage = "immortal",
+                    rankImageLarge = "immortal"
                 )
 
                 viewModel.addPlayer(player)
