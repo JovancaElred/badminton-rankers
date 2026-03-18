@@ -15,4 +15,6 @@
     <string name="no_data">No Data</string>
     <string name="team_a">Team A</string>
     <string name="team_b">Team B</string>
+    <string name="addNewMatchesTitle">Record Match</string>
+    <string name="score">SCORE</string>
 </resources>
