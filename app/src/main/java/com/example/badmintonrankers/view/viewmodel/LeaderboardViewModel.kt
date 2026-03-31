@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.badmintonrankers.data.model.Players
 import com.example.badmintonrankers.data.providers.PlayerDB
 import com.example.badmintonrankers.data.repository.BadminRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
 
 class LeaderboardViewModel(
     application: Application
@@ -21,8 +23,7 @@ class LeaderboardViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _data = MutableStateFlow<List<Players>>(emptyList())
-    val data: StateFlow<List<Players>> = _data
+    val data: StateFlow<List<Players>>
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
@@ -31,19 +32,15 @@ class LeaderboardViewModel(
         val playerDao = PlayerDB.getDatabase(application).playerDao()
         repository = BadminRepository(playerDao)
 
-        getMemberData()
-    }
-
-    private fun getMemberData(){
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getPlayer()
-                .onStart { _isLoading.value = true }
-                .catch { e -> _error.value = e.message }
-                .collect { players ->
-                    val sortedData = players.sortedByDescending { it.mmr }
-                    _data.emit(sortedData.toList())
-                    _isLoading.value = false
-                }
-        }
+        data = repository.getPlayer()
+            .map { list -> list.sortedByDescending { it.mmr ?: 0 } }
+            .onStart { _isLoading.value = true }
+            .catch { e -> _error.value = e.message }
+            .onEach { _isLoading.value = false }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                emptyList()
+            )
     }
 }

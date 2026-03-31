@@ -6,30 +6,22 @@ import androidx.lifecycle.viewModelScope
 import com.example.badmintonrankers.data.model.Players
 import com.example.badmintonrankers.data.providers.PlayerDB
 import com.example.badmintonrankers.data.repository.BadminRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
-class MemberViewModel (
-    application: Application
-) : AndroidViewModel(application){
+class HistoryViewModel(application: Application) : AndroidViewModel(application){
 
+    val data: StateFlow<List<Players>>
 
     private val repository: BadminRepository
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
-
-    val data: StateFlow<List<Players>>
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
@@ -48,19 +40,4 @@ class MemberViewModel (
                 emptyList()
             )
     }
-
-    private val _addPlayerSuccess = MutableSharedFlow<Unit?>()
-    val addPlayerSuccess: SharedFlow<Unit?> = _addPlayerSuccess.asSharedFlow()
-
-    fun addPlayer(players: Players) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.addPlayer(players)
-                _addPlayerSuccess.emit(Unit)
-            } catch (e: Exception) {
-                _error.emit(e.message)
-            }
-        }
-    }
-
 }

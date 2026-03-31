@@ -5,7 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.badmintonrankers.R
+import com.example.badmintonrankers.data.model.Players
+import com.example.badmintonrankers.databinding.NewMatchesSheetBinding
+import com.example.badmintonrankers.databinding.NewMemberSheetBinding
+import com.example.badmintonrankers.view.viewmodel.HistoryViewModel
+import com.example.badmintonrankers.view.viewmodel.MemberViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +31,17 @@ class History : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var dialog: BottomSheetDialog? = null
+
+    private var _addMatchesBinding: NewMatchesSheetBinding? = null
+    private val addMatchesBinding get() = _addMatchesBinding!!
+
+    private var categoryList: List<Players> = emptyList()
+
+    private val viewModel: HistoryViewModel by activityViewModels()
+
+    private lateinit var adapter: ArrayAdapter<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +56,52 @@ class History : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_history, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val fab: View = view.findViewById(R.id.historyFab)
+
+        adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            mutableListOf()
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.data.collect { list ->
+                categoryList = list
+
+                val names = list.map { it.displayName }.toMutableList()
+                names.add(0, "Select Player")
+
+                adapter.clear()
+                adapter.addAll(names)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        fab.setOnClickListener {
+            dialog = BottomSheetDialog(requireContext())
+            _addMatchesBinding = NewMatchesSheetBinding.inflate(layoutInflater)
+
+            // attach adapter to spinner HERE
+            addMatchesBinding.spinnerTeamA1.adapter = adapter
+            addMatchesBinding.spinnerTeamA2.adapter = adapter
+            addMatchesBinding.spinnerTeamB1.adapter = adapter
+            addMatchesBinding.spinnerTeamB2.adapter = adapter
+
+            dialog?.setOnDismissListener {
+                dialog = null
+                _addMatchesBinding = null
+            }
+
+            dialog?.setCancelable(true)
+            dialog?.setContentView(addMatchesBinding.root)
+            dialog?.show()
+        }
     }
 
     companion object {

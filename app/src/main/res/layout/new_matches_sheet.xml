@@ -35,28 +35,36 @@
 
         <Spinner
             android:id="@+id/spinnerTeamA1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teamATitle"/>
+            app:layout_constraintEnd_toStartOf="@id/teamAAnd"
+            app:layout_constraintTop_toBottomOf="@id/teamATitle"
+            android:padding="12dp"
+            app:layout_constraintHorizontal_weight="1"/>
 
         <TextView
             android:id="@+id/teamAAnd"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="And"
-            app:layout_constraintStart_toEndOf="@+id/spinnerTeamA1"
-            app:layout_constraintTop_toBottomOf="@+id/teamATitle"
             android:padding="12dp"
             android:textSize="16sp"
             android:textStyle="bold"
-            />
+            app:layout_constraintStart_toEndOf="@id/spinnerTeamA1"
+            app:layout_constraintEnd_toStartOf="@id/spinnerTeamA2"
+            app:layout_constraintTop_toTopOf="@id/spinnerTeamA1"
+            app:layout_constraintBottom_toBottomOf="@id/spinnerTeamA1"/>
+
         <Spinner
             android:id="@+id/spinnerTeamA2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/teamAAnd"
-            app:layout_constraintTop_toBottomOf="@+id/teamATitle"/>
+            app:layout_constraintStart_toEndOf="@id/teamAAnd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/spinnerTeamA1"
+            android:padding="12dp"
+            app:layout_constraintHorizontal_weight="1"/>
 
         <TextView
             android:id="@+id/vs"
@@ -65,9 +73,11 @@
             android:text="VS"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerTeamA1"
-            android:padding="12dp"
-            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerTeamA2"
+            android:gravity="center"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             />
 
@@ -82,30 +92,39 @@
             android:textSize="16sp"
             android:textStyle="bold"
             />
+
         <Spinner
             android:id="@+id/spinnerTeamB1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:padding="12dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teamBTitle"/>
+            app:layout_constraintEnd_toStartOf="@id/teamBAnd"
+            app:layout_constraintTop_toBottomOf="@+id/teamBTitle"
+            app:layout_constraintHorizontal_weight="1"/>
 
         <TextView
             android:id="@+id/teamBAnd"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="And"
-            app:layout_constraintStart_toEndOf="@+id/spinnerTeamB1"
-            app:layout_constraintTop_toBottomOf="@+id/teamBTitle"
+            app:layout_constraintStart_toEndOf="@id/spinnerTeamB1"
+            app:layout_constraintEnd_toStartOf="@id/spinnerTeamB2"
+            app:layout_constraintTop_toTopOf="@+id/spinnerTeamB1"
             android:padding="12dp"
             android:textSize="16sp"
             android:textStyle="bold"
             />
+
         <Spinner
             android:id="@+id/spinnerTeamB2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/teamBAnd"
-            app:layout_constraintTop_toBottomOf="@+id/teamBTitle"/>
+            app:layout_constraintStart_toEndOf="@id/teamBAnd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/spinnerTeamB1"
+            android:padding="12dp"
+            app:layout_constraintHorizontal_weight="1"/>
 
         <TextView
             android:id="@+id/scoreTitle"
@@ -113,17 +132,18 @@
             android:layout_height="wrap_content"
             android:text="@string/score"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vs"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerTeamB1"
             android:padding="12dp"
             android:textSize="16sp"
             android:textStyle="bold"
             />
         <EditText
             android:id="@+id/scoreTeamA"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/cutom_input"
             android:inputType="number"
+            android:hint="0"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginTop="4dp"
@@ -132,32 +152,37 @@
             android:textColorHint="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/scoreTitle"
+            app:layout_constraintEnd_toStartOf="@id/scoreSeparator"
+            app:layout_constraintHorizontal_weight="1"
             />
         <TextView
             android:id="@+id/scoreSeparator"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
             app:layout_constraintStart_toEndOf="@id/scoreTeamA"
-            app:layout_constraintTop_toBottomOf="@+id/scoreTitle"
+            app:layout_constraintEnd_toStartOf="@id/scoreTeamB"
+            app:layout_constraintTop_toTopOf="@+id/scoreTeamA"
             android:padding="12dp"
             android:textSize="16sp"
             android:textStyle="bold"
             />
         <EditText
             android:id="@+id/scoreTeamB"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/cutom_input"
             android:inputType="number"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:layout_marginTop="4dp"
+            android:hint="0"
             android:padding="12dp"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             app:layout_constraintStart_toEndOf="@id/scoreSeparator"
-            app:layout_constraintTop_toBottomOf="@id/scoreTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/scoreTeamA"
+            app:layout_constraintHorizontal_weight="1"
             />
 
         <com.google.android.material.button.MaterialButton
